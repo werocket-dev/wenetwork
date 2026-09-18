@@ -5,8 +5,6 @@
  * Version: 0.1.0
  * Author: WeRocket
  * Text Domain: wenetwork-social
- * GitHub Plugin URI: werocket-dev/wenetwork
- * Primary Branch: main
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -36,6 +34,16 @@ require_once WENETWORK_SOCIAL_PATH . 'includes/class-oauth-router.php';
 require_once WENETWORK_SOCIAL_PATH . 'includes/class-cron-sync.php';
 require_once WENETWORK_SOCIAL_PATH . 'includes/class-admin-settings.php';
 require_once WENETWORK_SOCIAL_PATH . 'includes/class-shortcode.php';
+
+require_once WENETWORK_SOCIAL_PATH . 'lib/plugin-update-checker/plugin-update-checker.php';
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+PucFactory::buildUpdateChecker(
+	'https://github.com/werocket-dev/wenetwork/',
+	__FILE__,
+	'wenetwork-social'
+);
 
 register_activation_hook( __FILE__, array( 'WeNetwork_Social_Cron_Sync', 'activate' ) );
 register_activation_hook( __FILE__, array( 'WeNetwork_Social_OAuth_Router', 'activate_rewrite' ) );
