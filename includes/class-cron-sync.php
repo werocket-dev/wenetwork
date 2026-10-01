@@ -128,6 +128,8 @@ class WeNetwork_Social_Cron_Sync {
 		}
 		unset( $item );
 
+		WeNetwork_Social_Media_Cache::prune( 'instagram', $media );
+
 		set_transient( 'wenetwork_social_media_instagram', $media, self::MEDIA_TRANSIENT_TTL );
 
 		$profile = WeNetwork_Social_Api_Instagram::fetch_profile( $data['access_token'] );

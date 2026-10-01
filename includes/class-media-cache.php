@@ -28,7 +28,7 @@ class WeNetwork_Social_Media_Cache {
 		}
 
 		$upload_dir = wp_upload_dir();
-		$target_dir = trailingslashit( $upload_dir['basedir'] ) . self::SUBDIR . '/' . sanitize_key( $network );
+		$target_dir = self::network_dir( $network );
 
 		if ( ! wp_mkdir_p( $target_dir ) ) {
 			return $remote_url;
@@ -69,6 +69,40 @@ class WeNetwork_Social_Media_Cache {
 		}
 
 		return $file_url;
+	}
+
+	private static function network_dir( $network ) {
+		$upload_dir = wp_upload_dir();
+
+		return trailingslashit( $upload_dir['basedir'] ) . self::SUBDIR . '/' . sanitize_key( $network );
+	}
+
+	public static function delete_network( $network ) {
+		$dir = self::network_dir( $network );
+
+		foreach ( glob( $dir . '/*' ) ?: array() as $file ) {
+			wp_delete_file( $file );
+		}
+
+		@rmdir( $dir );
+	}
+
+	/**
+	 * Supprime les fichiers du cache qui ne correspondent plus aux médias courants
+	 * (post supprimé côté réseau social, ou compte changé).
+	 */
+	public static function prune( $network, array $media ) {
+		$keep = array();
+
+		foreach ( $media as $item ) {
+			$keep[ basename( (string) wp_parse_url( $item['thumbnail'], PHP_URL_PATH ) ) ] = true;
+		}
+
+		foreach ( glob( self::network_dir( $network ) . '/*' ) ?: array() as $file ) {
+			if ( ! isset( $keep[ basename( $file ) ] ) ) {
+				wp_delete_file( $file );
+			}
+		}
 	}
 
 	private static function guess_extension( $url ) {

@@ -139,6 +139,9 @@ class WeNetwork_Social_OAuth_Router {
 
 		WeNetwork_Social_Token_Store::delete( 'instagram' );
 		delete_transient( 'wenetwork_social_media_instagram' );
+		delete_transient( 'wenetwork_social_profile_instagram' );
+		delete_option( 'wenetwork_social_instagram_needs_reconnect' );
+		WeNetwork_Social_Media_Cache::delete_network( 'instagram' );
 
 		$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'success', __( 'Compte Instagram déconnecté.', 'wenetwork-social' ) );
 	}
