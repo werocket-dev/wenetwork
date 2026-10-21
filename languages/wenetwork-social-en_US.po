@@ -1,0 +1,234 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WeRocket Social 1.0.1\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "WeRocket Social"
+msgstr "WeRocket Social"
+
+msgid "Instagram"
+msgstr "Instagram"
+
+msgid "LinkedIn"
+msgstr "LinkedIn"
+
+msgid "La connexion a expiré, merci de vous reconnecter."
+msgstr "The connection has expired, please reconnect."
+
+msgid "Compte connecté"
+msgstr "Account connected"
+
+msgid "Aucun compte connecté pour le moment."
+msgstr "No account connected yet."
+
+msgid "Forcer la synchronisation"
+msgstr "Force sync"
+
+msgid "Déconnecter"
+msgstr "Disconnect"
+
+#, php-format
+msgid "Se connecter à %s"
+msgstr "Connect to %s"
+
+msgid "Bouton \"Suivez-nous\""
+msgstr "\"Follow us\" button"
+
+msgid "Affiche le nom du compte et son nombre d'abonnés, avec un lien direct vers le profil Instagram."
+msgstr "Shows the account name and its follower count, with a direct link to the Instagram profile."
+
+msgid "Style"
+msgstr "Style"
+
+msgid "Dégradé Instagram"
+msgstr "Instagram gradient"
+
+msgid "Couleur unie"
+msgstr "Solid color"
+
+msgid "Couleur (si \"Couleur unie\")"
+msgstr "Color (if \"Solid color\")"
+
+msgid "Code à copier :"
+msgstr "Code to copy:"
+
+msgid "Copier le shortcode"
+msgstr "Copy shortcode"
+
+msgid "Copié !"
+msgstr "Copied!"
+
+msgid "Personnalisation de l'affichage"
+msgstr "Display customization"
+
+msgid "Choisis les réglages ci-dessous, puis copie le code généré dans un élément \"Shortcode\" de Breakdance."
+msgstr "Choose the settings below, then copy the generated code into a Breakdance \"Shortcode\" element."
+
+msgid "Contenu"
+msgstr "Content"
+
+msgid "Type de contenu"
+msgstr "Content type"
+
+msgid "Tout"
+msgstr "All"
+
+msgid "Photos"
+msgstr "Photos"
+
+msgid "Vidéos / Reels"
+msgstr "Videos / Reels"
+
+msgid "Carrousels"
+msgstr "Carousels"
+
+msgid "Nombre de posts"
+msgstr "Number of posts"
+
+msgid "Mise en page"
+msgstr "Layout"
+
+msgid "Type d'affichage"
+msgstr "Display type"
+
+msgid "Grille"
+msgstr "Grid"
+
+msgid "Carrousel"
+msgstr "Carousel"
+
+msgid "Colonnes / images visibles par vue"
+msgstr "Columns / images visible per view"
+
+msgid "Faire défiler tout seul (en plus des flèches)"
+msgstr "Auto-scroll (in addition to the arrows)"
+
+msgid "Non"
+msgstr "No"
+
+msgid "Oui"
+msgstr "Yes"
+
+msgid "Vitesse de défilement (secondes)"
+msgstr "Scroll speed (seconds)"
+
+msgid "Format des images"
+msgstr "Image format"
+
+msgid "Carré"
+msgstr "Square"
+
+msgid "Portrait (4:5)"
+msgstr "Portrait (4:5)"
+
+msgid "Paysage (1.91:1)"
+msgstr "Landscape (1.91:1)"
+
+msgid "Original (garder les proportions)"
+msgstr "Original (keep proportions)"
+
+msgid "Espacement entre les posts (px)"
+msgstr "Spacing between posts (px)"
+
+msgid "Ouvrir en grand au clic (sans quitter le site)"
+msgstr "Open full size on click (without leaving the site)"
+
+msgid "Non (renvoyer vers Instagram)"
+msgstr "No (link to Instagram)"
+
+msgid "Style visuel"
+msgstr "Visual style"
+
+msgid "Rayon des bordures (px)"
+msgstr "Border radius (px)"
+
+msgid "Épaisseur de bordure (px)"
+msgstr "Border width (px)"
+
+msgid "Couleur de bordure"
+msgstr "Border color"
+
+msgid "Ombrage"
+msgstr "Shadow"
+
+msgid "Aucun"
+msgstr "None"
+
+msgid "Léger"
+msgstr "Light"
+
+msgid "Prononcé"
+msgstr "Strong"
+
+msgid "Likes / commentaires au survol"
+msgstr "Likes / comments on hover"
+
+msgid "Compte Instagram connecté avec succès."
+msgstr "Instagram account connected successfully."
+
+msgid "Compte Instagram déconnecté."
+msgstr "Instagram account disconnected."
+
+msgid "Connexion Instagram impossible, merci de réessayer."
+msgstr "Unable to connect to Instagram, please try again."
+
+msgid "Compte LinkedIn connecté avec succès."
+msgstr "LinkedIn account connected successfully."
+
+msgid "Compte LinkedIn déconnecté."
+msgstr "LinkedIn account disconnected."
+
+msgid "Connexion LinkedIn impossible, merci de réessayer."
+msgstr "Unable to connect to LinkedIn, please try again."
+
+msgid "Synchronisation réussie, les posts ont été mis à jour."
+msgstr "Sync successful, posts have been updated."
+
+msgid "La synchronisation a échoué."
+msgstr "The sync failed."
+
+msgid "Requête OAuth invalide ou expirée, merci de réessayer."
+msgstr "Invalid or expired OAuth request, please try again."
+
+msgid "L'autorisation a été refusée ou a échoué."
+msgstr "Authorization was denied or failed."
+
+msgid "Toutes les 3 heures"
+msgstr "Every 3 hours"
+
+msgid "Aucun compte Instagram connecté."
+msgstr "No Instagram account connected."
+
+msgid "WENETWORK_META_APP_ID / WENETWORK_META_APP_SECRET ne sont pas définis dans wp-config.php."
+msgstr "WENETWORK_META_APP_ID / WENETWORK_META_APP_SECRET are not defined in wp-config.php."
+
+msgid "WENETWORK_LINKEDIN_CLIENT_ID / WENETWORK_LINKEDIN_CLIENT_SECRET ne sont pas définis dans wp-config.php."
+msgstr "WENETWORK_LINKEDIN_CLIENT_ID / WENETWORK_LINKEDIN_CLIENT_SECRET are not defined in wp-config.php."
+
+msgid "Action non autorisée."
+msgstr "Action not allowed."
+
+msgid "Flux en cours de synchronisation."
+msgstr "Feed is syncing."
+
+msgid "Aucun post à afficher."
+msgstr "No posts to display."
+
+msgid "Précédent"
+msgstr "Previous"
+
+msgid "Suivant"
+msgstr "Next"
+
+msgid "abonnés"
+msgstr "followers"
+
+msgid "Fermer"
+msgstr "Close"
+
+msgid "Voir sur Instagram"
+msgstr "View on Instagram"

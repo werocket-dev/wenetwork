@@ -375,9 +375,9 @@ class WeNetwork_Social_Shortcode {
 		</style>
 
 		<div id="wenetwork-lightbox">
-			<button type="button" class="wenetwork-lightbox-close" aria-label="Fermer">&times;</button>
-			<button type="button" class="wenetwork-lightbox-prev" aria-label="Précédent">&#8249;</button>
-			<button type="button" class="wenetwork-lightbox-next" aria-label="Suivant">&#8250;</button>
+			<button type="button" class="wenetwork-lightbox-close" aria-label="<?php esc_attr_e( 'Fermer', 'wenetwork-social' ); ?>">&times;</button>
+			<button type="button" class="wenetwork-lightbox-prev" aria-label="<?php esc_attr_e( 'Précédent', 'wenetwork-social' ); ?>">&#8249;</button>
+			<button type="button" class="wenetwork-lightbox-next" aria-label="<?php esc_attr_e( 'Suivant', 'wenetwork-social' ); ?>">&#8250;</button>
 			<div class="wenetwork-lightbox-content">
 				<div class="wenetwork-lightbox-media"></div>
 				<p class="wenetwork-lightbox-caption"></p>

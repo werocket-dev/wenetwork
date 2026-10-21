@@ -10,8 +10,9 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 class WeNetwork_Social_OAuth_Router {
 
-	const STATE_TRANSIENT_PREFIX = 'wenetwork_social_state_';
-	const QUERY_VAR              = 'wenetwork_social_callback';
+	const STATE_TRANSIENT_PREFIX  = 'wenetwork_social_state_';
+	const NOTICE_DETAIL_TRANSIENT = 'wenetwork_social_notice_detail_';
+	const QUERY_VAR               = 'wenetwork_social_callback';
 
 	private static $instance = null;
 
@@ -97,21 +98,21 @@ class WeNetwork_Social_OAuth_Router {
 		$redirect_back = $this->settings_url( 'instagram' );
 
 		if ( ! empty( $_GET['error'] ) ) {
-			$this->redirect_with_notice( $redirect_back, 'error', sanitize_text_field( wp_unslash( $_GET['error_description'] ?? $_GET['error'] ) ) );
+			$this->redirect_with_notice( $redirect_back, 'oauth_denied', sanitize_text_field( wp_unslash( $_GET['error_description'] ?? $_GET['error'] ) ) );
 		}
 
 		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
 		$code  = isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '';
 
 		if ( ! $this->verify_state( 'instagram', $state ) || empty( $code ) ) {
-			$this->redirect_with_notice( $redirect_back, 'error', __( 'Requête OAuth invalide ou expirée, merci de réessayer.', 'wenetwork-social' ) );
+			$this->redirect_with_notice( $redirect_back, 'oauth_invalid' );
 		}
 
 		$result = WeNetwork_Social_Api_Instagram::exchange_code_for_token( $code );
 
 		if ( is_wp_error( $result ) ) {
 			wenetwork_social_log( 'oauth-instagram', $result->get_error_message() );
-			$this->redirect_with_notice( $redirect_back, 'error', __( 'Connexion Instagram impossible, merci de réessayer.', 'wenetwork-social' ) );
+			$this->redirect_with_notice( $redirect_back, 'ig_failed' );
 		}
 
 		WeNetwork_Social_Token_Store::set( 'instagram', $result );
@@ -119,7 +120,7 @@ class WeNetwork_Social_OAuth_Router {
 		// Premier fetch immédiat pour ne pas laisser le client sans posts en attendant le cron.
 		do_action( 'wenetwork_social_sync_instagram' );
 
-		$this->redirect_with_notice( $redirect_back, 'success', __( 'Compte Instagram connecté avec succès.', 'wenetwork-social' ) );
+		$this->redirect_with_notice( $redirect_back, 'ig_connected' );
 	}
 
 	public function handle_instagram_sync_now() {
@@ -128,10 +129,10 @@ class WeNetwork_Social_OAuth_Router {
 		$result = WeNetwork_Social_Cron_Sync::instance()->fetch_instagram_media();
 
 		if ( is_wp_error( $result ) ) {
-			$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'error', $result->get_error_message() );
+			$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'sync_error', $result->get_error_message() );
 		}
 
-		$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'success', __( 'Synchronisation réussie, les posts ont été mis à jour.', 'wenetwork-social' ) );
+		$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'sync_ok' );
 	}
 
 	public function handle_instagram_disconnect() {
@@ -143,7 +144,7 @@ class WeNetwork_Social_OAuth_Router {
 		delete_option( 'wenetwork_social_instagram_needs_reconnect' );
 		WeNetwork_Social_Media_Cache::delete_network( 'instagram' );
 
-		$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'success', __( 'Compte Instagram déconnecté.', 'wenetwork-social' ) );
+		$this->redirect_with_notice( $this->settings_url( 'instagram' ), 'ig_disconnected' );
 	}
 
 	/* ---------------------------------------------------------------- */
@@ -169,26 +170,26 @@ class WeNetwork_Social_OAuth_Router {
 		$redirect_back = $this->settings_url( 'linkedin' );
 
 		if ( ! empty( $_GET['error'] ) ) {
-			$this->redirect_with_notice( $redirect_back, 'error', sanitize_text_field( wp_unslash( $_GET['error_description'] ?? $_GET['error'] ) ) );
+			$this->redirect_with_notice( $redirect_back, 'oauth_denied', sanitize_text_field( wp_unslash( $_GET['error_description'] ?? $_GET['error'] ) ) );
 		}
 
 		$state = isset( $_GET['state'] ) ? sanitize_text_field( wp_unslash( $_GET['state'] ) ) : '';
 		$code  = isset( $_GET['code'] ) ? sanitize_text_field( wp_unslash( $_GET['code'] ) ) : '';
 
 		if ( ! $this->verify_state( 'linkedin', $state ) || empty( $code ) ) {
-			$this->redirect_with_notice( $redirect_back, 'error', __( 'Requête OAuth invalide ou expirée, merci de réessayer.', 'wenetwork-social' ) );
+			$this->redirect_with_notice( $redirect_back, 'oauth_invalid' );
 		}
 
 		$result = WeNetwork_Social_Api_Linkedin::exchange_code_for_token( $code );
 
 		if ( is_wp_error( $result ) ) {
 			wenetwork_social_log( 'oauth-linkedin', $result->get_error_message() );
-			$this->redirect_with_notice( $redirect_back, 'error', __( 'Connexion LinkedIn impossible, merci de réessayer.', 'wenetwork-social' ) );
+			$this->redirect_with_notice( $redirect_back, 'li_failed' );
 		}
 
 		WeNetwork_Social_Token_Store::set( 'linkedin', $result );
 
-		$this->redirect_with_notice( $redirect_back, 'success', __( 'Compte LinkedIn connecté avec succès.', 'wenetwork-social' ) );
+		$this->redirect_with_notice( $redirect_back, 'li_connected' );
 	}
 
 	public function handle_linkedin_disconnect() {
@@ -197,7 +198,7 @@ class WeNetwork_Social_OAuth_Router {
 		WeNetwork_Social_Token_Store::delete( 'linkedin' );
 		delete_transient( 'wenetwork_social_media_linkedin' );
 
-		$this->redirect_with_notice( $this->settings_url( 'linkedin' ), 'success', __( 'Compte LinkedIn déconnecté.', 'wenetwork-social' ) );
+		$this->redirect_with_notice( $this->settings_url( 'linkedin' ), 'li_disconnected' );
 	}
 
 	/* ---------------------------------------------------------------- */
@@ -236,16 +237,18 @@ class WeNetwork_Social_OAuth_Router {
 		);
 	}
 
-	private function redirect_with_notice( $base_url, $type, $message ) {
-		wp_redirect(
-			add_query_arg(
-				array(
-					'wenetwork_notice'      => $type,
-					'wenetwork_notice_text' => rawurlencode( $message ),
-				),
-				$base_url
-			)
-		);
+	/**
+	 * Le callback OAuth s'exécute côté site (langue du site), alors que la notice s'affiche dans l'admin
+	 * (langue de l'utilisateur) : on ne transmet donc qu'un code, traduit à l'affichage.
+	 * Un éventuel détail technique (message d'erreur du fournisseur) passe par un transient court,
+	 * jamais par l'URL.
+	 */
+	private function redirect_with_notice( $base_url, $code, $detail = '' ) {
+		if ( '' !== $detail ) {
+			set_transient( self::NOTICE_DETAIL_TRANSIENT . get_current_user_id(), $detail, MINUTE_IN_SECONDS );
+		}
+
+		wp_redirect( add_query_arg( 'wenetwork_notice', $code, $base_url ) );
 		exit;
 	}
 }

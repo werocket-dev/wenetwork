@@ -68,6 +68,7 @@ class WeNetwork_Social_Admin_Settings {
 	private function render_network_panel( $network, $label ) {
 		$connected      = WeNetwork_Social_Token_Store::is_connected( $network );
 		$needs_reconnect = 'instagram' === $network && get_option( 'wenetwork_social_instagram_needs_reconnect' );
+		$account        = ( 'instagram' === $network && $connected ) ? $this->instagram_account_summary() : null;
 		?>
 		<div class="card" style="max-width: 600px; padding: 20px;">
 			<p>
@@ -76,6 +77,12 @@ class WeNetwork_Social_Admin_Settings {
 					echo '<strong style="color:#b32d2e;">' . esc_html__( 'La connexion a expiré, merci de vous reconnecter.', 'wenetwork-social' ) . '</strong>';
 				} elseif ( $connected ) {
 					echo '<span style="color:#1a7f37;">&#10003; ' . esc_html__( 'Compte connecté', 'wenetwork-social' ) . '</span>';
+					if ( $account ) {
+						echo '<br><strong>@' . esc_html( $account['username'] ) . '</strong>';
+						if ( '' !== $account['id'] ) {
+							echo ' &middot; ID : ' . esc_html( $account['id'] );
+						}
+					}
 				} else {
 					echo esc_html__( 'Aucun compte connecté pour le moment.', 'wenetwork-social' );
 				}
@@ -340,18 +347,58 @@ class WeNetwork_Social_Admin_Settings {
 		<?php
 	}
 
+	/**
+	 * @return array{username:string,id:string}|null
+	 */
+	private function instagram_account_summary() {
+		$data     = WeNetwork_Social_Token_Store::get( 'instagram' );
+		$profile  = get_transient( 'wenetwork_social_profile_instagram' );
+		$username = $data['username'] ?? ( is_array( $profile ) ? ( $profile['username'] ?? '' ) : '' );
+
+		if ( '' === $username ) {
+			return null;
+		}
+
+		return array(
+			'username' => $username,
+			'id'       => (string) ( $data['ig_user_id'] ?? '' ),
+		);
+	}
+
 	private function render_notice() {
 		if ( empty( $_GET['wenetwork_notice'] ) ) {
 			return;
 		}
 
-		$type    = 'success' === $_GET['wenetwork_notice'] ? 'notice-success' : 'notice-error';
-		$message = isset( $_GET['wenetwork_notice_text'] ) ? sanitize_text_field( wp_unslash( $_GET['wenetwork_notice_text'] ) ) : '';
+		$notices = array(
+			'ig_connected'    => array( 'notice-success', __( 'Compte Instagram connecté avec succès.', 'wenetwork-social' ) ),
+			'ig_disconnected' => array( 'notice-success', __( 'Compte Instagram déconnecté.', 'wenetwork-social' ) ),
+			'ig_failed'       => array( 'notice-error', __( 'Connexion Instagram impossible, merci de réessayer.', 'wenetwork-social' ) ),
+			'li_connected'    => array( 'notice-success', __( 'Compte LinkedIn connecté avec succès.', 'wenetwork-social' ) ),
+			'li_disconnected' => array( 'notice-success', __( 'Compte LinkedIn déconnecté.', 'wenetwork-social' ) ),
+			'li_failed'       => array( 'notice-error', __( 'Connexion LinkedIn impossible, merci de réessayer.', 'wenetwork-social' ) ),
+			'sync_ok'         => array( 'notice-success', __( 'Synchronisation réussie, les posts ont été mis à jour.', 'wenetwork-social' ) ),
+			'sync_error'      => array( 'notice-error', __( 'La synchronisation a échoué.', 'wenetwork-social' ) ),
+			'oauth_invalid'   => array( 'notice-error', __( 'Requête OAuth invalide ou expirée, merci de réessayer.', 'wenetwork-social' ) ),
+			'oauth_denied'    => array( 'notice-error', __( 'L\'autorisation a été refusée ou a échoué.', 'wenetwork-social' ) ),
+		);
 
-		if ( empty( $message ) ) {
+		$code = sanitize_key( wp_unslash( $_GET['wenetwork_notice'] ) );
+
+		if ( ! isset( $notices[ $code ] ) ) {
 			return;
 		}
 
-		printf( '<div class="notice %s is-dismissible"><p>%s</p></div>', esc_attr( $type ), esc_html( $message ) );
+		list( $class, $message ) = $notices[ $code ];
+
+		$detail_key = WeNetwork_Social_OAuth_Router::NOTICE_DETAIL_TRANSIENT . get_current_user_id();
+		$detail     = get_transient( $detail_key );
+
+		if ( $detail ) {
+			delete_transient( $detail_key );
+			$message .= ' ' . $detail;
+		}
+
+		printf( '<div class="notice %s is-dismissible"><p>%s</p></div>', esc_attr( $class ), esc_html( $message ) );
 	}
 }

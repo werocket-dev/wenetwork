@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WeRocket Social
  * Description: Passerelle OAuth Instagram & LinkedIn pour afficher les posts des clients via un élément Breakdance.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: WeRocket
  * Text Domain: wenetwork-social
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WENETWORK_SOCIAL_VERSION', '0.1.0' );
+define( 'WENETWORK_SOCIAL_VERSION', '1.0.1' );
 define( 'WENETWORK_SOCIAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WENETWORK_SOCIAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -51,6 +51,21 @@ register_deactivation_hook( __FILE__, array( 'WeNetwork_Social_Cron_Sync', 'deac
 register_deactivation_hook( __FILE__, array( 'WeNetwork_Social_OAuth_Router', 'deactivate_rewrite' ) );
 
 add_action( 'plugins_loaded', 'wenetwork_social_init' );
+add_action( 'init', 'wenetwork_social_load_textdomain' );
+
+function wenetwork_social_load_textdomain() {
+	// Les textes sources sont en français : toute variante d'anglais (en_GB, en_CA...) utilise le fichier en_US.
+	add_filter(
+		'plugin_locale',
+		static function ( $locale, $domain ) {
+			return ( 'wenetwork-social' === $domain && 0 === strpos( $locale, 'en_' ) ) ? 'en_US' : $locale;
+		},
+		10,
+		2
+	);
+
+	load_plugin_textdomain( 'wenetwork-social', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
 
 function wenetwork_social_init() {
 	WeNetwork_Social_OAuth_Router::instance();

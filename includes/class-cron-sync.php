@@ -136,6 +136,11 @@ class WeNetwork_Social_Cron_Sync {
 
 		if ( ! is_wp_error( $profile ) ) {
 			set_transient( 'wenetwork_social_profile_instagram', $profile, self::MEDIA_TRANSIENT_TTL );
+
+			// Le nom d'utilisateur est conservé avec le jeton pour l'afficher dans l'admin même quand le cache expire.
+			if ( ( $data['username'] ?? '' ) !== $profile['username'] ) {
+				WeNetwork_Social_Token_Store::set( 'instagram', array_merge( $data, array( 'username' => $profile['username'] ) ) );
+			}
 		}
 
 		return true;
