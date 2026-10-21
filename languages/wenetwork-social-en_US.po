@@ -1,6 +1,6 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: WeRocket Social 1.0.2\n"
+"Project-Id-Version: WeRocket Social 1.0.3\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -211,6 +211,9 @@ msgstr "WENETWORK_LINKEDIN_CLIENT_ID / WENETWORK_LINKEDIN_CLIENT_SECRET are not 
 
 msgid "Action non autorisée."
 msgstr "Action not allowed."
+
+msgid "Compte non connecté."
+msgstr "Account not connected."
 
 msgid "Flux en cours de synchronisation."
 msgstr "Feed is syncing."

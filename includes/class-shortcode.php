@@ -93,9 +93,18 @@ class WeNetwork_Social_Shortcode {
 			$border_width > 0 ? sprintf( 'border:%dpx solid %s;', $border_width, $border_color ) : ''
 		);
 
-		$assets = $this->maybe_print_assets();
-
 		$media = get_transient( 'wenetwork_social_media_' . $network );
+
+		// Compte non connecté (ou déconnecté) : rien à montrer aux visiteurs, mais l'administrateur
+		// voit pourquoi le bloc est vide. Testé avant maybe_print_assets() pour ne pas consommer
+		// l'impression unique du CSS/JS commun.
+		if ( ( empty( $media ) || is_wp_error( $media ) ) && ! WeNetwork_Social_Token_Store::is_connected( $network ) ) {
+			return current_user_can( 'manage_options' )
+				? '<p class="wenetwork-social-feed-empty">' . esc_html__( 'Compte non connecté.', 'wenetwork-social' ) . '</p>'
+				: '';
+		}
+
+		$assets = $this->maybe_print_assets();
 
 		if ( empty( $media ) || is_wp_error( $media ) ) {
 			return $assets . '<p class="wenetwork-social-feed-empty">' . esc_html__( 'Flux en cours de synchronisation.', 'wenetwork-social' ) . '</p>';

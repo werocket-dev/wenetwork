@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WeRocket Social
  * Description: Passerelle OAuth Instagram & LinkedIn pour afficher les posts des clients via un élément Breakdance.
- * Version: 1.0.2
+ * Version: 1.0.3
  * Author: WeRocket
  * Text Domain: wenetwork-social
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WENETWORK_SOCIAL_VERSION', '1.0.2' );
+define( 'WENETWORK_SOCIAL_VERSION', '1.0.3' );
 define( 'WENETWORK_SOCIAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WENETWORK_SOCIAL_URL', plugin_dir_url( __FILE__ ) );
 
