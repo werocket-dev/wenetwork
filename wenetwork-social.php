@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WeRocket Social
  * Description: Passerelle OAuth Instagram & LinkedIn pour afficher les posts des clients via un élément Breakdance.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Author: WeRocket
  * Text Domain: wenetwork-social
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WENETWORK_SOCIAL_VERSION', '1.0.1' );
+define( 'WENETWORK_SOCIAL_VERSION', '1.0.2' );
 define( 'WENETWORK_SOCIAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WENETWORK_SOCIAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -54,15 +54,15 @@ add_action( 'plugins_loaded', 'wenetwork_social_init' );
 add_action( 'init', 'wenetwork_social_load_textdomain' );
 
 function wenetwork_social_load_textdomain() {
-	// Les textes sources sont en français : toute variante d'anglais (en_GB, en_CA...) utilise le fichier en_US.
-	add_filter(
-		'plugin_locale',
-		static function ( $locale, $domain ) {
-			return ( 'wenetwork-social' === $domain && 0 === strpos( $locale, 'en_' ) ) ? 'en_US' : $locale;
-		},
-		10,
-		2
-	);
+	$locale = determine_locale();
+
+	// Les textes sources sont en français : toute variante d'anglais (en_GB, en_CA...) utilise le
+	// catalogue en_US. Il doit être enregistré sous la locale réelle, sinon WordPress (6.5+) ne le
+	// retrouve pas : il cherche un fichier nommé d'après la locale courante, sans filtre 'plugin_locale'.
+	if ( 0 === strpos( $locale, 'en_' ) ) {
+		load_textdomain( 'wenetwork-social', WENETWORK_SOCIAL_PATH . 'languages/wenetwork-social-en_US.mo', $locale );
+		return;
+	}
 
 	load_plugin_textdomain( 'wenetwork-social', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
