@@ -99,9 +99,19 @@ class WeNetwork_Social_Shortcode {
 		// voit pourquoi le bloc est vide. Testé avant maybe_print_assets() pour ne pas consommer
 		// l'impression unique du CSS/JS commun.
 		if ( ( empty( $media ) || is_wp_error( $media ) ) && ! WeNetwork_Social_Token_Store::is_connected( $network ) ) {
-			return current_user_can( 'manage_options' )
-				? '<p class="wenetwork-social-feed-empty">' . esc_html__( 'Compte non connecté.', 'wenetwork-social' ) . '</p>'
-				: '';
+			if ( ! current_user_can( 'manage_options' ) ) {
+				return '';
+			}
+
+			// Message destiné à l'administrateur connecté : dans la langue de son profil, pas celle du site.
+			$switched = switch_to_user_locale( get_current_user_id() );
+			$message  = __( 'Compte non connecté.', 'wenetwork-social' );
+
+			if ( $switched ) {
+				restore_previous_locale();
+			}
+
+			return '<p class="wenetwork-social-feed-empty">' . esc_html( $message ) . '</p>';
 		}
 
 		$assets = $this->maybe_print_assets();

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WeRocket Social
  * Description: Passerelle OAuth Instagram & LinkedIn pour afficher les posts des clients via un élément Breakdance.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: WeRocket
  * Text Domain: wenetwork-social
  */
@@ -11,7 +11,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'WENETWORK_SOCIAL_VERSION', '1.0.3' );
+define( 'WENETWORK_SOCIAL_VERSION', '1.0.4' );
 define( 'WENETWORK_SOCIAL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WENETWORK_SOCIAL_URL', plugin_dir_url( __FILE__ ) );
 
@@ -53,18 +53,33 @@ register_deactivation_hook( __FILE__, array( 'WeNetwork_Social_OAuth_Router', 'd
 add_action( 'plugins_loaded', 'wenetwork_social_init' );
 add_action( 'init', 'wenetwork_social_load_textdomain' );
 
+// Les textes sources sont en français : toute variante d'anglais (en_GB, en_CA...) utilise le
+// catalogue en_US. Ce filtre (WordPress 6.6+) couvre aussi les changements de langue en cours de
+// requête, par exemple le message réservé à l'administrateur affiché sur un site en français.
+add_filter(
+	'load_translation_file',
+	static function ( $file, $domain, $locale ) {
+		if ( 'wenetwork-social' === $domain && 0 === strpos( (string) $locale, 'en_' ) ) {
+			return WENETWORK_SOCIAL_PATH . 'languages/wenetwork-social-en_US.mo';
+		}
+
+		return $file;
+	},
+	10,
+	3
+);
+
 function wenetwork_social_load_textdomain() {
+	// Enregistre le dossier des traductions pour le chargement à la demande de WordPress.
+	load_plugin_textdomain( 'wenetwork-social', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+
 	$locale = determine_locale();
 
-	// Les textes sources sont en français : toute variante d'anglais (en_GB, en_CA...) utilise le
-	// catalogue en_US. Il doit être enregistré sous la locale réelle, sinon WordPress (6.5+) ne le
-	// retrouve pas : il cherche un fichier nommé d'après la locale courante, sans filtre 'plugin_locale'.
+	// Chargement explicite sous la locale réelle : avant WordPress 6.6, ou si le filtre n'est pas appliqué,
+	// le fichier serait cherché sous le nom de la locale courante (en_GB, ...) et introuvable.
 	if ( 0 === strpos( $locale, 'en_' ) ) {
 		load_textdomain( 'wenetwork-social', WENETWORK_SOCIAL_PATH . 'languages/wenetwork-social-en_US.mo', $locale );
-		return;
 	}
-
-	load_plugin_textdomain( 'wenetwork-social', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 function wenetwork_social_init() {
