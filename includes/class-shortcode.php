@@ -32,7 +32,40 @@ class WeNetwork_Social_Shortcode {
 		add_shortcode( 'wenetwork_social_follow', array( $this, 'render_follow_button' ) );
 	}
 
+	/**
+	 * Exécute un rendu dans une locale imposée par l'attribut « lang » du shortcode (ex. lang="en_US"),
+	 * puis restaure la locale du site. Sans « lang », le rendu suit la langue du site.
+	 */
+	private function render_in_locale( $atts, $callback ) {
+		$lang = is_array( $atts ) && isset( $atts['lang'] ) ? preg_replace( '/[^A-Za-z_]/', '', (string) $atts['lang'] ) : '';
+
+		if ( '' === $lang || ! function_exists( 'switch_to_locale' ) ) {
+			return call_user_func( $callback );
+		}
+
+		$switched = switch_to_locale( $lang );
+		$html     = call_user_func( $callback );
+
+		if ( $switched ) {
+			restore_previous_locale();
+		}
+
+		return $html;
+	}
+
 	public function render_feed( $atts ) {
+		return $this->render_in_locale( $atts, function () use ( $atts ) {
+			return $this->render_feed_html( $atts );
+		} );
+	}
+
+	public function render_follow_button( $atts ) {
+		return $this->render_in_locale( $atts, function () use ( $atts ) {
+			return $this->render_follow_button_html( $atts );
+		} );
+	}
+
+	private function render_feed_html( $atts ) {
 		$atts = shortcode_atts(
 			array(
 				'network'        => 'instagram',
@@ -203,7 +236,7 @@ class WeNetwork_Social_Shortcode {
 		return ob_get_clean();
 	}
 
-	public function render_follow_button( $atts ) {
+	private function render_follow_button_html( $atts ) {
 		$atts = shortcode_atts(
 			array(
 				'network' => 'instagram',
